@@ -1,0 +1,7 @@
+ANNarchy==4.8.2.6
+numpy
+pandas
+matplotlib
+seaborn
+jupyterlab
+notebook

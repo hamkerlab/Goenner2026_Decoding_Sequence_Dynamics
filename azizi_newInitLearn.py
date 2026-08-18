@@ -202,7 +202,7 @@ def get_synapses_wmod(Exc_neurons, Inh_neurons, netw_params, n_grid, L_maze_cm, 
     mod_factor = 0.4 # 0.2  ## 0.2 looks good for n_grid = 80!
     n_exc = int(n_grid**2)
     Z = weight_mod(mod_factor, range(n_exc), n_exc, n_grid)
-    for iNeuron in xrange(n_exc):       
+    for iNeuron in range(n_exc):       
         x,y = xypos(iNeuron, n_grid) 
         pvm[x, y] = Z[iNeuron]
         #ion(), matshow(pvm), colorbar(), title('Example for weight modulation'), show()
@@ -315,7 +315,7 @@ def plot_sequence(nGrid, nValueCells, M_sp_PlaceCells, placevalMat): #SpikeCount
     spCountMat = zeros([L, L])
     spTimeMat = nan*ones([L,L]) 
     placeValueMat = zeros([L, L])
-    for iNeuron in xrange(nValueCells):
+    for iNeuron in range(nValueCells):
         x,y = xypos(iNeuron, L)        
         placeValueMat[x, y] = placevalMat[iNeuron]
         times = M_sp_PlaceCells.spiketimes[iNeuron] / ms
@@ -356,14 +356,14 @@ def plot_firingMaps(nPlaceCells, mazeSize_cm, spatialBinSize_firingMap_cm, M_sp_
         ion()
 
         pcIndex = zeros(8)
-        for i in xrange(len(pcIndex)):
+        for i in range(len(pcIndex)):
             pcIndex[i] = iN_sorted_nobump_only[l_nobump_only - i - 1]
    
         firingMap_PC = nan * ones([mazeSize_cm / spatialBinSize_firingMap_cm, mazeSize_cm / spatialBinSize_firingMap_cm]) # use nan to create white background for plotting
         spike_mat = -inf*ones([mazeSize_cm / spatialBinSize_firingMap_cm, mazeSize_cm / spatialBinSize_firingMap_cm]) # use zeros to enable smoothing
         rate_mat = zeros([mazeSize_cm / spatialBinSize_firingMap_cm, mazeSize_cm / spatialBinSize_firingMap_cm]) # use zeros to enable smoothing
 
-        for iPlaceCells in xrange(len(pcIndex)):
+        for iPlaceCells in range(len(pcIndex)):
             spike_mat = zeros([mazeSize_cm / spatialBinSize_firingMap_cm, mazeSize_cm / spatialBinSize_firingMap_cm]) # use zeros to enable smoothing
             rate_mat = zeros([mazeSize_cm / spatialBinSize_firingMap_cm, mazeSize_cm / spatialBinSize_firingMap_cm]) # use zeros to enable smoothing
             spiketimes = M_sp_PC.spiketimes[pcIndex[iPlaceCells]]
@@ -373,7 +373,7 @@ def plot_firingMaps(nPlaceCells, mazeSize_cm, spatialBinSize_firingMap_cm, M_sp_
             ymin = 200
             ymax = 0
 
-            for iTimes in xrange(len(spiketimes)):        
+            for iTimes in range(len(spiketimes)):        
                 #x = pathRecord_x_cm[spiketimes[iTimes]]
                 #y = pathRecord_y_cm[spiketimes[iTimes]]
                 x = pathRecord_x_cm[int(rint(spiketimes[iTimes] / 0.1)) ]
@@ -422,9 +422,9 @@ def plot_firingMaps(nPlaceCells, mazeSize_cm, spatialBinSize_firingMap_cm, M_sp_
         # randomly draw some value cells: # DG CELLS!
         #vcIndex = zeros(10)
         vcIndex = zeros(len(pcIndex))
-        for i in xrange(len(vcIndex)):
+        for i in range(len(vcIndex)):
             #vcIndex[i] = randrange(nPlaceCells)
-            #for j in xrange(i-1):
+            #for j in range(i-1):
             #    while vcIndex[i] == vcIndex[j]:
             #        vcIndex[i] = randrange(nPlaceCells)
 	#vcIndex[3] = 480 # goal index
@@ -432,7 +432,7 @@ def plot_firingMaps(nPlaceCells, mazeSize_cm, spatialBinSize_firingMap_cm, M_sp_
         
         firingMap_VC = nan * ones([mazeSize_cm / spatialBinSize_firingMap_cm, mazeSize_cm / spatialBinSize_firingMap_cm]) # use nan to create white background for plotting
 
-        for iValueCells in xrange(len(vcIndex)):
+        for iValueCells in range(len(vcIndex)):
             spiketimes = M_sp_DG.spiketimes[vcIndex[iValueCells]]
             spike_mat_vc = zeros([mazeSize_cm / spatialBinSize_firingMap_cm, mazeSize_cm / spatialBinSize_firingMap_cm]) # use zeros to enable smoothing
             rate_mat_vc = zeros([mazeSize_cm / spatialBinSize_firingMap_cm, mazeSize_cm / spatialBinSize_firingMap_cm]) # use zeros to enable smoothing
@@ -442,7 +442,7 @@ def plot_firingMaps(nPlaceCells, mazeSize_cm, spatialBinSize_firingMap_cm, M_sp_
             ymin = 350
             ymax = 0
                 
-            for iTimes in xrange(len(spiketimes)):        
+            for iTimes in range(len(spiketimes)):        
                 #x = pathRecord_x_cm[spiketimes[iTimes]]
                 #y = pathRecord_y_cm[spiketimes[iTimes]]
                 x = pathRecord_x_cm[int(rint(spiketimes[iTimes] / 0.1)) ]
@@ -503,7 +503,7 @@ def plot_LearnedPlaceValue(L_grid, nPlaceCells, S_VC_PC):
     # Show learned place-value:
     
     plotW_VC_PC = zeros([L_grid, L_grid])    
-    for iNeuron in xrange(nPlaceCells):
+    for iNeuron in range(nPlaceCells):
         x,y = xypos(iNeuron, L_grid)
         plotW_VC_PC[x, y] = S_VC_PC.w[iNeuron, iNeuron]
     
@@ -523,7 +523,7 @@ def weight_mod(factor, mat_index, nmax, L):
     N=20
     ci = randint(0, nmax, N)
     Z_mod = zeros(len(mat_index))
-    for k in xrange(N):  
+    for k in range(N):  
         xc, yc = xypos(ci[k], L)
         Z_mod += exp(- ((x-xc)**2 + (y-yc)**2) / 10.0**2 ) 
     Z_mod -= Z_mod.mean(); Z_mod /= Z_mod.max() # zero mean, max. 1

@@ -19,6 +19,8 @@ import numpy as np
 setup(dt = 0.2)
 #setup(dt = 1.0) # test 9.11.15
 
+# weights from file:
+filename = '../data/wdata_seqmodel'
 
 #--------------------------------------------------------------------------------------------------------
 def xypos(mat_index, L):
@@ -293,11 +295,8 @@ print("reward location (x,y) = ", xypos_maze(goal_index, n_grid, L_maze_cm)) # L
 #placevalMat[range(n_exc)] = Exp_xyValue(range(n_exc), n_grid, 0, goal_index) # * 1.0e-9 
 placevalMat[range(n_exc)] = np.random.rand(n_exc) * 0.3 # * 0.4 # defined in nA - caution, tau_exc is now 4x larger than previously!!! # 0.4e-9
 
-filename = 'wdata_seqmodel'
-
-
 #'''#
-file_wdata_VC_PC = open('data/'+filename, 'rb') 
+file_wdata_VC_PC = open(filename, 'rb') 
 Wdata_VC_PC=pickle.load(file_wdata_VC_PC, encoding='latin1') 
 file_wdata_VC_PC.close()
 print("file = ", filename)
@@ -590,7 +589,10 @@ for label in ax.get_xticklabels() + ax.get_yticklabels():
     label.set_fontsize(fsize) # 6
 
 #tight_layout()
-savefig('ann_raster_contextosc_nodelay_new.png', dpi=300)
+
+import os
+os.makedirs('figs', exist_ok=True)
+savefig('figs/ann_raster_contextosc_nodelay_new.png', dpi=300)
 
 print("Done")
 
@@ -706,8 +708,7 @@ for label in ax.get_xticklabels() + ax.get_yticklabels():
 
 subplots_adjust(bottom=0.08, top=0.95, hspace=0.5)
 
-
-savefig('ann_raster_contextosc_nodelay_stepsizes_mod_combined.png', dpi=300)
+savefig('figs/ann_raster_contextosc_nodelay_stepsizes_mod_combined.png', dpi=300)
 
 
 print("Total time = ", time()-t_init)

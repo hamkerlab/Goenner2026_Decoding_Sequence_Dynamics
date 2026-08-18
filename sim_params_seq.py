@@ -22,7 +22,7 @@
 # Anderer Ansatz:
 # Starte die Simulation mit einem zufaelligen Phasenwert fuer jede Wiederholung!
 
-params_id = 4 # 14 # 13 # 12 # 11 # 10 # 9 # 8 # 7 # 6 # 5 # 4 # 3 # 2 # 1
+params_id = 16 # 14 # 13 # 12 # 11 # 10 # 9 # 8 # 7 # 6 # 5 # 4 # 3 # 2 # 1
 
 # Achtung: Abweichende Feuerraten zwischen "smooth" und "speed-modulated"?!
 # Siehe comp_diagnostics.py !
@@ -34,6 +34,73 @@ params_id = 4 # 14 # 13 # 12 # 11 # 10 # 9 # 8 # 7 # 6 # 5 # 4 # 3 # 2 # 1
 #
 # Interessant bei 9: Asymmetrische Verteilung der x-steps um den wahren Wert!!! (Grosser Window-Overlap!)
 # --------------------------------------------------------------------------
+if params_id == 16:
+	# REVISION: same as id 15 but PER-CELL place-field widths drawn from a
+	# lognormal. Place-field widths are lognormal. Fit in the notebook.
+	rate_seed			= 0
+	n_grid_cm			= 300
+	DeltaT_window_sec	= 0.02
+	overlap				= 0.75
+	n_reps				= 250
+	mean_peak_Hz		= 2.6
+	sigma_peak_Hz		= 0.66
+	pf_width_mode		= "lognormal"
+	pf_width_std_cm		= 17.94
+	pf_width_logn_mean	= 2.89  # = log(scale) from stats.lognorm.fit (open-field PF std)
+	pf_width_logn_sigma	= 0.42  # = shape from stats.lognorm.fit (= sigma of log-width)
+	sigma_code_cm		= (2**0.5) * pf_width_std_cm   # reference only
+	n_mincells			= 1
+	x_speed_m_per_sec	= 13.57
+	f_gamma_Hz			= 36.0
+	target_spikes_per_step = 18.0
+	replay_gain 		= 35.0
+	replay_max_rate_Hz	= 60.0
+	T_max_sec			= 0.14
+	n_windows_max		= (T_max_sec - DeltaT_window_sec) / ((1-overlap) * DeltaT_window_sec) + 1
+	n_windows			= int(n_windows_max)
+	T_sim_local			= DeltaT_window_sec + (n_windows - 1) * (1-overlap) * DeltaT_window_sec
+	n_osc_cycles		= f_gamma_Hz * T_sim_local  # should be interger
+	frames_per_sec		= (1.0 - DeltaT_window_sec) / ((1-overlap) * DeltaT_window_sec) + 1
+	x_step_cm			= 100 * x_speed_m_per_sec / frames_per_sec
+	y_step_cm			= x_step_cm
+	gamma_mod_depth 	= 0.21
+
+
+if params_id == 15:
+	# REVISION: open-field-anchored, SINGLE (median) place-field width.
+	# Goal: parameters traceable to Pfeiffer & Foster data (no hand-tuning).
+	rate_seed			= 0
+	n_grid_cm			= 260
+	DeltaT_window_sec	= 0.02   # P&F decoding WINDOW (20 ms) 
+	overlap				= 0.75   # -> 5 ms step (P&F); n_increments = 4
+	n_reps				= 100
+	# Absolute scale is set later by an empirically calibrated replay_gain.
+	mean_peak_Hz		= 2.6    # log-space mean -> median exp(2.6) ~ 13.5 Hz
+	sigma_peak_Hz		= 0.66
+	# Place-field width: SINGLE value = open-field MEDIAN fitted std.
+	# Fits use exp(-d^2 / 2 sigma^2); sim uses exp(-d^2 / sigma_code^2).
+	# Conversion sigma_code = sqrt(2)*fitted_std is applied in the generator.
+	pf_width_mode		= "single"
+	pf_width_std_cm		= 17.94  # open-field median fitted std (cm)
+	pf_width_logn_mean	= None
+	pf_width_logn_sigma	= None
+	sigma_code_cm		= (2**0.5) * pf_width_std_cm   # reference only
+	n_mincells			= 1
+	x_speed_m_per_sec	= 13.6
+	f_gamma_Hz			= 35.0
+	target_spikes_per_step = 18.0  # land inside observed 16-21 per 25 ms span
+	replay_gain			= 25.0   # empirical calibration to match target_spikes_per_step
+	replay_max_rate_Hz	= 60.0   # alt anchor (rare replay max); see commented block in sim
+	# Resulting properties:
+	T_max_sec			= 0.14
+	n_windows_max		= (T_max_sec - DeltaT_window_sec) / ((1-overlap) * DeltaT_window_sec) + 1
+	n_windows			= int(n_windows_max)
+	T_sim_local			= DeltaT_window_sec + (n_windows - 1) * (1-overlap) * DeltaT_window_sec
+	n_osc_cycles		= f_gamma_Hz * T_sim_local   # ties per-step phase smearing to gamma freq
+	frames_per_sec		= (1.0 - DeltaT_window_sec) / ((1-overlap) * DeltaT_window_sec) + 1
+	x_step_cm			= 100 * x_speed_m_per_sec / frames_per_sec
+	y_step_cm			= x_step_cm
+	gamma_mod_depth 	= 0.2
 
 if params_id == 14: 
     # Like id 10, but with 10% overlap
@@ -340,12 +407,13 @@ elif params_id == 4:
 	# New: Used with random displacement of start locations [in the range +/- 5cm]
 	# 
 	# 
+	rate_seed			= 0                                                                         # Master seed; set to None to draw a fresh random seed on every run
 	n_grid_cm 		    = 200 	                                                                    # Environment size: n_grid_cm x n_grid_cm
 	DeltaT_window_sec 	= 0.005 # 0.01 # 0.02                                                               # Decoding window length
-	n_reps 	  			= 1000 	                                                            # no. of sequence repetitions (default: 1000)
-	sigma_code_cm 		= 15.0                                                                      # Place field width and spatial spread of the code
+	n_reps 	  			= 250	                                                            # no. of sequence repetitions (default: 1000)
+	sigma_code_cm 		= 18                                                                   # Place field width and spatial spread of the code
 	rate_factor 		= 25.0 / 3.125								    							# To maintain average spike counts constant - but they are about 2x higher now!
-	max_rate_Hz         = 0.5 * rate_factor * 300.0 # 0.5*rate_factor
+	max_rate_Hz         = 2.0 * rate_factor * 300.0 # 0.5*rate_factor
 	#max_rate_Hz         = 1 * rate_factor * 300.0 # 0.5*rate_factor # compensation for lower firing rates in smooth movement
 	n_mincells          = 1 # 0 # 10
     # Simulation parameters chosen a priori:
@@ -355,14 +423,16 @@ elif params_id == 4:
                                                                                                     # Higher overlap allows to fit more decoding windows into a fixed-duration oscillation cycle
                                                                                                     # Zero overlap appears to increase the likelihood of "negative" steps    
 	# Resulting simulation properties:
-	T_max_sec           = 0.01 * n_grid_cm / x_speed_m_per_sec                                      # Max. simulation time determined by sequence progression speed and arena size
+	T_max_sec           = 0.2                                      # Max. simulation time determined by sequence progression speed and arena size
 	n_windows_max		= (T_max_sec - DeltaT_window_sec) / ((1-overlap) * DeltaT_window_sec) + 1   # Max. window count determined by simulation time, window size, and window overlap
 	n_windows 		    = int(n_windows_max) 	                                            		# decoding windows for a single simulated sequence
-	n_osc_cycles 		= 5.2	                                                                	# Number of simulated oscillation cycles
+	n_osc_cycles 		= 5.0                                                                	# Number of simulated oscillation cycles
 	# Caution: Do I get problems in the polar plots, which assume "equal" phase values across oscillation cycles?!
 	frames_per_sec		= (1.0 - DeltaT_window_sec) / ((1-overlap) * DeltaT_window_sec) + 1
 	x_step_cm           = 100 * x_speed_m_per_sec / frames_per_sec 	                                # Displacement per frame, in x-direction
 	y_step_cm           = x_step_cm                                                                 # Displacement per frame, in y-direction
+	gamma_mod_depth		= 0.95
+ 
 
 # ---------------------------------------------------------------------
 

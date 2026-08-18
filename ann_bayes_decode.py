@@ -32,7 +32,7 @@ from scipy.signal import argrelextrema, argrelmax, argrelmin, hilbert, detrend
 if __name__ == '__main__':
  
     #file_data = open('loop_data/dataloop_out_scalew1_sigmafanX1_sigmaCA3X1_window5ms-2ms_bayes_160bins_subs160.txt', 'r') # 12 networks, 40 trials
-    file_data = open('loop_data/dataloop_out_scalew1_sigmafanX1_sigmaCA3X1_window5ms-2ms_bayes_160bins_subs160corr.txt', 'rb')     
+    file_data = open('../data/dataloop_out_scalew1_sigmafanX1_sigmaCA3X1_window5ms-2ms_bayes.txt', 'rb')     
 
     use_popspikes_all =  False # True # False 
 
@@ -72,7 +72,7 @@ if __name__ == '__main__':
 
     n_subsets = 40
     n_subset_neurons = 160
-    n_spatial_bins = int(2 * n_grid) # 1*
+    n_spatial_bins = n_grid  #int(2 * n_grid) # 1*
     summed_prob = np.zeros([n_networks, n_trials, n_spatial_bins, n_spatial_bins])
     #summed_prob_2subsets = np.zeros([n_networks, n_trials, 2, n_spatial_bins, n_spatial_bins])
     summed_prob_2subsets = np.zeros([2, n_networks, n_trials, n_spatial_bins, n_spatial_bins]) # order changed
@@ -99,7 +99,12 @@ if __name__ == '__main__':
 
     for i_netw in range(n_networks):
         for i_trial in range(n_trials):
-            r = pickle.load(file_data, encoding='latin1')
+            try:
+                r = pickle.load(file_data, encoding='latin1')
+            except EOFError:
+                print("Error loading data for network {}, trial {}".format(i_netw, i_trial))
+                break
+
             xm[i_netw, i_trial, :] = r['x_mean']
             ym[i_netw, i_trial, :] = r['y_mean']
             ind_end[i_netw, i_trial] = xy_index_maze(xm[i_netw, i_trial, -2], ym[i_netw, i_trial, -2], n_grid, n_grid)
@@ -160,7 +165,8 @@ if __name__ == '__main__':
             x_array_2subsets[i_netw, i_trial, 0, zero_ind] = np.nan * np.ones(len(zero_ind))
             y_array_2subsets[i_netw, i_trial, 0, zero_ind] = np.nan * np.ones(len(zero_ind))
 
-            expsum_single[i_netw, i_trial, :, :] = np.reshape(r['expsum_single'], (n_spatial_bins, n_spatial_bins))
+            if 'expsum_single' in r.keys():
+                expsum_single[i_netw, i_trial, :, :] = np.reshape(r['expsum_single'], (n_spatial_bins, n_spatial_bins))
             diff_x_bayes = np.diff(x_array_all[i_netw, i_trial, :-1])
             diff_y_bayes = np.diff(y_array_all[i_netw, i_trial, :-1])
             diff_xy_bayes[i_netw, i_trial, :-2] = np.sqrt(diff_x_bayes**2 + diff_y_bayes**2)
@@ -182,6 +188,9 @@ if __name__ == '__main__':
                 if diff_xy[i_netw, i_trial, i_frame] > 0:
                     fraction_proj_diff_xy_startend[i_netw, i_trial, i_frame] = proj_diff_xy_startend[i_netw, i_trial, i_frame] / (diff_xy[i_netw, i_trial, i_frame] * curr_dist_togoal[i_netw, i_trial, i_frame])
 
+        else:
+            continue
+        break
 
     file_data.close()
 
@@ -190,7 +199,7 @@ if __name__ == '__main__':
     # Comparison between PV and Bayes coordinates:
     #'''
 
-    #inetw_nz, jtr_nz, kframe_nz = np.nonzero(x_array_all[:, :, :-1] <> 0) # 
+    #inetw_nz, jtr_nz, kframe_nz = np.nonzero(x_array_all[:, :, :-1] != 0) # 
     inetw_nz, jtr_nz, kframe_nz = np.nonzero(np.isnan(x_array_all[:, :, :-1]) == 0) # use this when substituing zero coordinates by nan above
     print("Fraction of non-zero coordinates (combined): ", len(inetw_nz) / float(n_networks * n_trials * n_decframes))
     rms_x = np.sqrt( ((L_maze_cm / float(n_grid) * ym[inetw_nz, jtr_nz, kframe_nz] - L_maze_cm / float(n_spatial_bins) * x_array_all[inetw_nz, jtr_nz, kframe_nz])**2).mean() ) # x and y are swapped for Bayesian decoding relative to PV decoding!
@@ -490,7 +499,7 @@ if __name__ == '__main__':
 
         tight_layout()
 
-        savefig('plots/bump_motion_dynamics_noexclude_sigmafanX1_sigmaCA3X1.png', dpi=300)
+        savefig('figs/bump_motion_dynamics_noexclude_sigmafanX1_sigmaCA3X1.png', dpi=300)
 
 
         figure()

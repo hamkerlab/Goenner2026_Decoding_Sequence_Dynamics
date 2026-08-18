@@ -24,12 +24,12 @@ def plot_latencies_timecourse(latencies_Home, latencies_Away, n_valid_nets, nTri
         figure(figsize=(4,4), dpi=dpisize) 
 
         y_err_bar_Home = [std(latencies_Home, 0) / sqrt(n_valid_nets) , std(latencies_Home, 0)/ sqrt(n_valid_nets)]
-        #errorbar(xrange(1, nTrials,   2), mean(latencies_Home, 0), yerr=y_err_bar_Home, color= 'r', marker='d', markersize=3)
-        #errorbar(xrange(1, nTrials+1,   2), mean(latencies_Home, 0), yerr=y_err_bar_Home, color= 'r', marker='d', markersize=3, linewidth=1.5)
-        errorbar(xrange(1, nTrials+1,   2), mean(latencies_Home, 0), yerr=y_err_bar_Home, color= 'r', marker='o', markersize=3, linewidth=2)
+        #errorbar(range(1, nTrials,   2), mean(latencies_Home, 0), yerr=y_err_bar_Home, color= 'r', marker='d', markersize=3)
+        #errorbar(range(1, nTrials+1,   2), mean(latencies_Home, 0), yerr=y_err_bar_Home, color= 'r', marker='d', markersize=3, linewidth=1.5)
+        errorbar(range(1, nTrials+1,   2), mean(latencies_Home, 0), yerr=y_err_bar_Home, color= 'r', marker='o', markersize=3, linewidth=2)
         y_err_bar_Away = [std(latencies_Away, 0) / sqrt(n_valid_nets), std(latencies_Away, 0) / sqrt(n_valid_nets)]
-        #errorbar(xrange(2, nTrials+1, 2), mean(latencies_Away, 0), yerr=y_err_bar_Away, color= 'k', marker='s', markersize=3, linewidth=1.5)
-        errorbar(xrange(2, nTrials+1, 2), mean(latencies_Away, 0), yerr=y_err_bar_Away, color= 'k', marker='o', markersize=3, linewidth=2)
+        #errorbar(range(2, nTrials+1, 2), mean(latencies_Away, 0), yerr=y_err_bar_Away, color= 'k', marker='s', markersize=3, linewidth=1.5)
+        errorbar(range(2, nTrials+1, 2), mean(latencies_Away, 0), yerr=y_err_bar_Away, color= 'k', marker='o', markersize=3, linewidth=2)
 
         ax=gca()
         ax.set_xticks([1, nTrials])
@@ -113,9 +113,9 @@ def plot_Home_weights(weight_array_home, weights, L_maze_cm, maze_edge_cm, n_gri
         placeValueMat = zeros([n_grid, n_grid])
         figure(figsize=(4, 4), dpi=dpisize)
         wmax_home = round(weight_array_home.max() / 1.0e-9, 2)
-        for n in xrange(min(36, n_valid_nets)): # Caution - "new" values will be inserted at lower indices!
+        for n in range(min(36, n_valid_nets)): # Caution - "new" values will be inserted at lower indices!
                 placeValueMat = zeros([n_grid, n_grid])
-                for iNeuron in xrange(len(weight_array_home[n][nTrials-1])):
+                for iNeuron in range(len(weight_array_home[n][nTrials-1])):
                     x,y = net_init.xypos(iNeuron, n_grid)
                     placeValueMat[x, y] = weight_array_home[n][nTrials-1][iNeuron] / 1.0e-9
                 n_edge = ceil(maze_edge_cm / float(L_maze_cm) * n_grid)
@@ -168,9 +168,9 @@ def plot_Away_weights(weight_array_away, weights, L_maze_cm, maze_edge_cm, n_gri
                 placeValueMat = zeros([n_grid, n_grid])
                 figure(figsize=(4, 4), dpi=dpisize)
                 wmax_away = round(weight_array_away.max() / 1.0e-9, 2)
-                for n in xrange(min(36, n_valid_nets)): # Caution - "new" values will be inserted at lower indices!
+                for n in range(min(36, n_valid_nets)): # Caution - "new" values will be inserted at lower indices!
                         placeValueMat = zeros([n_grid, n_grid])
-                        for iNeuron in xrange(len(weight_array_away[n][nTrials-1])):
+                        for iNeuron in range(len(weight_array_away[n][nTrials-1])):
                             x,y = net_init.xypos(iNeuron, n_grid)
                             placeValueMat[x, y] = weight_array_away[n][nTrials-1][iNeuron] / 1.0e-9
                         n_edge = ceil(maze_edge_cm / float(L_maze_cm) * n_grid)
@@ -234,8 +234,8 @@ def plots_dist_to_goal(endpoints_Home, endpoints_Away, goal_index_array_Home, go
         dist_home = sqrt((x-xr)**2 + (y-yr)**2)
 
         boxplot(dist_home)
-        #plot(xrange(1, int(floor(nTrials/2.0) +1)), mean(dist_home, 0), 'r*')
-        #plot(xrange(1, len(endpoints_Home[0])+1), mean(dist_home, 0), 'r*') # Extra plot of mean values
+        #plot(range(1, int(floor(nTrials/2.0) +1)), mean(dist_home, 0), 'r*')
+        #plot(range(1, len(endpoints_Home[0])+1), mean(dist_home, 0), 'r*') # Extra plot of mean values
         title('Distances between sequence endpoint and reward location (Home trials)', fontsize=15) # , N='+str(n_valid_nets)+' networks', fontsize=8)#  (last)  #, unscaled
         title('Pooled across '+str(n_valid_nets)+' networks', fontsize=15) # , fontsize=8)#  (last)  #, unscaled
         xlabel('Trial', fontsize=15)
@@ -313,8 +313,8 @@ def plot_startenddist(seqstart, seqend, n_grid, L_maze_cm, n_valid_nets, nTrials
         seqend_nz_Away = zeros([n_valid_nets, floor(nTrials / 2.0)])
         #seqst_nz_Away = zeros([n_valid_nets, ceil(nTrials / 2.0)])
         #seqend_nz_Away = zeros([n_valid_nets, ceil(nTrials / 2.0)])
-        for inet in xrange(n_valid_nets):                                 
-            for jt in xrange(nTrials):
+        for inet in range(n_valid_nets):                                 
+            for jt in range(nTrials):
                 if mod(jt, 2)==0:
                     seqst_nz_Home[inet, ceil(jt/2.0)] = seqstart[inet][jt][0]
                     seqend_nz_Home[inet, ceil(jt/2.0)] = seqend[inet][jt][0]
@@ -330,10 +330,10 @@ def plot_startenddist(seqstart, seqend, n_grid, L_maze_cm, n_valid_nets, nTrials
         dist_startend_Home = sqrt((xs_home - xe_home)**2 + (ys_home - ye_home)**2)
         dist_startend_Away = sqrt((xs_away - xe_away)**2 + (ys_away - ye_away)**2)
         y_err_bar_Home = [std(dist_startend_Home, 0) / sqrt(n_valid_nets) , std(dist_startend_Home, 0)/ sqrt(n_valid_nets)]
-        errorbar(xrange(1, nTrials+1,   2), mean(dist_startend_Home, 0), yerr=y_err_bar_Home, color= 'r', marker='o', markersize=3, linewidth=1.5)
+        errorbar(range(1, nTrials+1,   2), mean(dist_startend_Home, 0), yerr=y_err_bar_Home, color= 'r', marker='o', markersize=3, linewidth=1.5)
         y_err_bar_Away = [std(dist_startend_Away, 0) / sqrt(n_valid_nets), std(dist_startend_Away, 0) / sqrt(n_valid_nets)]
-        #errorbar(xrange(2, nTrials+1, 2), mean(dist_startend_Away, 0), yerr=y_err_bar_Away, color= 'k', marker='o', markersize=3, linewidth=1.5)
-        errorbar(xrange(1, nTrials,   2), mean(dist_startend_Away, 0), yerr=y_err_bar_Away, color= 'k', marker='o', markersize=3, linewidth=1.5)
+        #errorbar(range(2, nTrials+1, 2), mean(dist_startend_Away, 0), yerr=y_err_bar_Away, color= 'k', marker='o', markersize=3, linewidth=1.5)
+        errorbar(range(1, nTrials,   2), mean(dist_startend_Away, 0), yerr=y_err_bar_Away, color= 'k', marker='o', markersize=3, linewidth=1.5)
         ax=gca()
         ax.set_xticks([1, nTrials])
         ax.set_xticklabels([1, nTrials])
@@ -363,9 +363,9 @@ def plot_weight_vs_dist(weight_array_home, weight_array_away, goal_index_array_H
 
         dist = -inf*ones([n_valid_nets, n_grid**2])
         x, y = net_init.xypos_maze(range(n_grid**2), n_grid, L_maze_cm)
-        for inet in xrange(n_valid_nets):                             
+        for inet in range(n_valid_nets):                             
             xh, yh = net_init.xypos_maze(goal_index_array_Home[inet][0], n_grid, L_maze_cm)
-            for iw in xrange(n_grid**2):
+            for iw in range(n_grid**2):
                 if x[iw] > maze_edge_cm and x[iw] < L_maze_cm - maze_edge_cm and y[iw] > maze_edge_cm and y[iw] < L_maze_cm - maze_edge_cm:
                      dist[inet, iw] = sqrt((x[iw]-xh)**2 + (y[iw]-yh)**2)       # dist[:,:] contains the distances to the "current" Home for all cells, for all networks
 
@@ -374,7 +374,7 @@ def plot_weight_vs_dist(weight_array_home, weight_array_away, goal_index_array_H
         #wsorted=-inf*ones([n_valid_nets, len(isorted)])
         maxdist = 0
         imax = 0
-        for inet in xrange(n_valid_nets):
+        for inet in range(n_valid_nets):
             #isorted = argsort(dist[inet,:][inz])
             #wsorted[inet] = weight_array_home[inet][floor(nTrials/2.0)][inz[isorted]]
             #wsorted[inet] = weight_array_home[inet][i_trial][inz[isorted]]
@@ -384,14 +384,14 @@ def plot_weight_vs_dist(weight_array_home, weight_array_away, goal_index_array_H
         dists_sorted = sort(dist[imax, inz])            # Distances (for network imax) sorted
         lastval = dists_sorted[0]
         n_vals = 1
-        for k in xrange(len(dists_sorted)-1):           # Now, summarize all "equal" distances into the same bin
+        for k in range(len(dists_sorted)-1):           # Now, summarize all "equal" distances into the same bin
             if dists_sorted[k+1] != lastval:
                 n_vals += 1
                 lastval = dists_sorted[k+1]
         distvals=zeros(n_vals)
         lastval = dists_sorted[0]
         n_vals = 1
-        for k in xrange(len(dists_sorted)-1):                                  
+        for k in range(len(dists_sorted)-1):                                  
             if dists_sorted[k+1] != lastval:
                 n_vals += 1
                 distvals[n_vals-1] = dists_sorted[k+1]  # distvals now contains all possible distances exactly once
@@ -405,8 +405,8 @@ def plot_weight_vs_dist(weight_array_home, weight_array_away, goal_index_array_H
         initweights = 1.0e-10 * rand(len(weight_array_home[:,0,0]), len(weight_array_home[0,:,0]), len(weight_array_home[0,0,:]))
         initweights_away = 1.0e-10 * rand(len(weight_array_away[:,0,0]), len(weight_array_away[0,:,0]), len(weight_array_away[0,0,:]))
 
-        for inet in xrange(n_valid_nets):
-            for idv in xrange(len(distvals)):
+        for inet in range(n_valid_nets):
+            for idv in range(len(distvals)):
                 ind = nonzero(dist[inet, inz] == distvals[idv])[0]
 
                 if len(ind)>0: wmean[inet, idv] = initweights[inet][0][inz][ind].mean()
@@ -417,13 +417,13 @@ def plot_weight_vs_dist(weight_array_home, weight_array_away, goal_index_array_H
         plot(distvals, nanmean(wmean, 0) / 1.0e-9, '.', markersize=3)
         
         # Weights after learning:
-        #for i_trial in xrange(0, int(floor(nTrials/2.0)), 2):
-        #for i_trial in xrange(0, int(floor(nTrials/2.0))+1, 5):
-        for i_trial in xrange(0, int(floor(nTrials/2.0))+1, 10):
+        #for i_trial in range(0, int(floor(nTrials/2.0)), 2):
+        #for i_trial in range(0, int(floor(nTrials/2.0))+1, 5):
+        for i_trial in range(0, int(floor(nTrials/2.0))+1, 10):
                 wmean = nan*ones([n_valid_nets, len(distvals)])
                 wmean_away = nan*ones([n_valid_nets, len(distvals)])
-                for inet in xrange(n_valid_nets):
-                    for idv in xrange(len(distvals)):
+                for inet in range(n_valid_nets):
+                    for idv in range(len(distvals)):
                         ind = nonzero(dist[inet, inz] == distvals[idv])[0]
                         #if len(ind)>0: wmean[inet, idv] = weight_array_home[inet][floor(nTrials/2.0)][inz][ind].mean()
                         if len(ind)>0: wmean[inet, idv] = weight_array_home[inet][i_trial][inz][ind].mean()             
@@ -456,8 +456,8 @@ def plot_weight_vs_dist(weight_array_home, weight_array_away, goal_index_array_H
 
 
         '''# Same anaylsis for Away weights - misleading: #
-        for inet in xrange(n_valid_nets):
-            for idv in xrange(len(distvals)):
+        for inet in range(n_valid_nets):
+            for idv in range(len(distvals)):
                 ind = nonzero(dist[inet, inz] == distvals[idv])[0]
                 if len(ind)>0: wmean_away[inet, idv] = initweights_away[inet][0][inz][ind].mean()
 
@@ -466,11 +466,11 @@ def plot_weight_vs_dist(weight_array_home, weight_array_away, goal_index_array_H
         plot(distvals, nanmean(wmean_away, 0) / 1.0e-9, '.', markersize=3)
         
         # Weights after learning:
-        for i_trial in xrange(0, int(floor(nTrials/2.0)), 2):
+        for i_trial in range(0, int(floor(nTrials/2.0)), 2):
                 wmean = nan*ones([n_valid_nets, len(distvals)])
                 wmean_away = nan*ones([n_valid_nets, len(distvals)])
-                for inet in xrange(n_valid_nets):
-                    for idv in xrange(len(distvals)):
+                for inet in range(n_valid_nets):
+                    for idv in range(len(distvals)):
                         ind = nonzero(dist[inet, inz] == distvals[idv])[0]
                         if len(ind)>0: wmean_away[inet, idv] = weight_array_away[inet][i_trial][inz][ind].mean()
 
@@ -504,7 +504,7 @@ def combined_plot_Both(center_mat_array, summed_prob, occupancyMap, weight_array
     #i_netw = i_net_occ
     n_grid = 80
 
-    for i_trial in xrange( min(nTrials, disp_trials)-1, -1, -1): # Reversed order!
+    for i_trial in range( min(nTrials, disp_trials)-1, -1, -1): # Reversed order!
         # Bump movement - data manager
         subplot(2, disp_trials, i_trial + 1)
         n_edge = ceil(maze_edge_cm / float(L_maze_cm) * center_len)
@@ -582,9 +582,9 @@ def rotated_plot(center_mat_array, seqstart, goal_index_array, seqend, center_le
 
         n_grid = 80 # center_len
 
-        for i_netw in xrange(n_valid_nets): 
+        for i_netw in range(n_valid_nets): 
             alpha = zeros(nTrials)
-            for i_trial in xrange(nTrials): 
+            for i_trial in range(nTrials): 
 
                 print("i_netw, i_trial = ", i_netw, i_trial)
 
@@ -623,7 +623,7 @@ def rotated_plot(center_mat_array, seqstart, goal_index_array, seqend, center_le
 
                     print("alpha[i_trial], scaling = ", alpha[i_trial], scaling)
 
-                    for ind in xrange(len(i)):
+                    for ind in range(len(i)):
                         k[ind] = cos(alpha[i_trial]) * (i[ind] - i[sortinds[0]]) - sin(alpha[i_trial]) * (j[ind] - j[sortinds[0]]) # old
                         l[ind] = sin(alpha[i_trial]) * (i[ind] - i[sortinds[0]]) + cos(alpha[i_trial]) * (j[ind] - j[sortinds[0]])
                         k[ind] = round(k[ind] * scaling + center_len ) # 
@@ -666,7 +666,7 @@ def rotated_plot(center_mat_array, seqstart, goal_index_array, seqend, center_le
                             alpha[i_trial] *= -1
 
                             imin = 0 ## Possibly remove the "start" points for ease of display
-                            for ind in xrange(imin, len(i)):
+                            for ind in range(imin, len(i)):
                                 k[ind] = cos(alpha[i_trial]) * (i[ind] - i[sortinds[0]]) - sin(alpha[i_trial]) * (j[ind] - j[sortinds[0]]) # old
                                 l[ind] = sin(alpha[i_trial]) * (i[ind] - i[sortinds[0]]) + cos(alpha[i_trial]) * (j[ind] - j[sortinds[0]])
 
@@ -757,9 +757,9 @@ def rotated_plot_bayes(center_mat_array, seqstart, goal_index_array, seqend, cen
 
         size_factor = center_len / float(n_spatial_bins)
 
-        for i_netw in xrange(n_valid_nets): 
+        for i_netw in range(n_valid_nets): 
             alpha = zeros(nTrials)
-            for i_trial in xrange(nTrials): 
+            for i_trial in range(nTrials): 
 
                 print("i_netw, i_trial = ", i_netw, i_trial)
 
@@ -796,7 +796,7 @@ def rotated_plot_bayes(center_mat_array, seqstart, goal_index_array, seqend, cen
 
                     print("alpha[i_trial], scaling = ", alpha[i_trial], scaling)
 
-                    for ind in xrange(len(i)):
+                    for ind in range(len(i)):
                         k[ind] = cos(alpha[i_trial]) * (i[ind] - i_start) * size_factor - sin(alpha[i_trial]) * (j[ind] - j_start) * size_factor # Bayes
                         l[ind] = sin(alpha[i_trial]) * (i[ind] - i_start) * size_factor + cos(alpha[i_trial]) * (j[ind] - j_start) * size_factor
                         k[ind] = round(k[ind] * scaling + center_len ) # 
@@ -835,7 +835,7 @@ def rotated_plot_bayes(center_mat_array, seqstart, goal_index_array, seqend, cen
                             alpha[i_trial] *= -1
 
                             imin = 0 ## Possibly remove the "start" points for ease of display
-                            for ind in xrange(len(i)):
+                            for ind in range(len(i)):
                                 k[ind] = cos(alpha[i_trial]) * (i[ind] - i_start) * size_factor - sin(alpha[i_trial]) * (j[ind] - j_start) * size_factor # Bayes
                                 l[ind] = sin(alpha[i_trial]) * (i[ind] - i_start) * size_factor + cos(alpha[i_trial]) * (j[ind] - j_start) * size_factor
                                 k[ind] = round(k[ind] * scaling + center_len ) # 
@@ -928,9 +928,9 @@ def rotated_plot_bayes_vector(x_array, y_array, seqstart, goal_index_array, seqe
         figure(figsize=(6,3), dpi=dpisize)
 
 
-        for i_netw in xrange(n_valid_nets): 
+        for i_netw in range(n_valid_nets): 
             alpha = zeros(nTrials)
-            for i_trial in xrange(nTrials): 
+            for i_trial in range(nTrials): 
 
                 print("i_netw, i_trial = ", i_netw, i_trial)
 
@@ -959,7 +959,7 @@ def rotated_plot_bayes_vector(x_array, y_array, seqstart, goal_index_array, seqe
 
                     alpha[i_trial] *= -1
 
-                    for ind in xrange(len(x_array[i_netw, i_trial, :])):
+                    for ind in range(len(x_array[i_netw, i_trial, :])):
                         k[ind] = cos(alpha[i_trial]) * (x_array[i_netw, i_trial, ind] - i_start) * size_factor - sin(alpha[i_trial]) * (y_array[i_netw, i_trial, ind] - j_start) * size_factor # Bayes
                         l[ind] = sin(alpha[i_trial]) * (x_array[i_netw, i_trial, ind] - i_start) * size_factor + cos(alpha[i_trial]) * (y_array[i_netw, i_trial, ind] - j_start) * size_factor
                         k[ind] = k[ind] * scaling + 0.5*center_len # for connected point plots
@@ -999,7 +999,7 @@ def rotated_plot_bayes_vector(x_array, y_array, seqstart, goal_index_array, seqe
 
                             alpha[i_trial] *= -1
 
-                            for ind in xrange(len(x_array[i_netw, i_trial, :])):
+                            for ind in range(len(x_array[i_netw, i_trial, :])):
                                 k[ind] = cos(alpha[i_trial]) * (x_array[i_netw, i_trial, ind] - i_start) * size_factor - sin(alpha[i_trial]) * (y_array[i_netw, i_trial, ind] - j_start) * size_factor # Bayes
                                 l[ind] = sin(alpha[i_trial]) * (x_array[i_netw, i_trial, ind] - i_start) * size_factor + cos(alpha[i_trial]) * (y_array[i_netw, i_trial, ind] - j_start) * size_factor
                                 k[ind] = k[ind] * scaling + 0.5*center_len # for connected point plots
